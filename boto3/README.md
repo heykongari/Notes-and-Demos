@@ -49,7 +49,7 @@ A client is a direct connection to an AWS service. All API operations are availa
 
 ```python
 # create client using a session
-demo_client = session.cient('s3')
+demo_client = session.client('s3')
 
 # task: list all buckets
 response = demo_client.list_buckets()
@@ -66,7 +66,7 @@ for bucket in response["Buckets"]:
 
 ## 🔷 `resource`: High-Level, object-oriented
 
-A resource is a higher-level abstraction over client. It wraps AWS operations into more pythonic, objbect-like interfaces.
+A resource is a higher-level abstraction over client. It wraps AWS operations into more pythonic, object-like interfaces.
 
 ### ✍️ Example
 
@@ -84,11 +84,11 @@ bucket.upload_file('local_file.txt', 'remote_file.txt')
 - Great for common tasks like EC2 and S3
 - Limited services
 
-### 🆚 Quick Comparision
+### 🆚 Quick Comparison
 | Feature | Session | client | resource |
-| - | - | - | - |
+|:-:|:-:|:-:|:-:|
 | Purpose | set aws config | direct API access | high-level, pythonic |
-| Style | - |low-level, dictionary style |objbect-oriented |
+| Style | - |low-level, dictionary style |object-oriented |
 | Control | full config control | all AWS API operations | simplified API |
 | Availability | all services |all services |limited services |
 | Use Case | starting point | scripts and automation | cleaner, readable |
