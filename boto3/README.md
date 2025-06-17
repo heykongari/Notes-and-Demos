@@ -85,10 +85,10 @@ bucket.upload_file('local_file.txt', 'remote_file.txt')
 - Limited services
 
 ### 🆚 Quick Comparison
-| Feature | Session | client | resource |
-|:-:|:-:|:-:|:-:|
-| Purpose | set aws config | direct API access | high-level, pythonic |
-| Style | - |low-level, dictionary style |object-oriented |
-| Control | full config control | all AWS API operations | simplified API |
-| Availability | all services |all services |limited services |
-| Use Case | starting point | scripts and automation | cleaner, readable |
+| Feature | client | resource |
+|:-:|:-:|:-:|
+| Style | low-level, dictionary style |high-level, object-oriented |
+| Verbosity | more parameters, more configurations | cleaner and python-like |
+| Use Case | full control and config | quick scripts and iterating resources |
+| Availability | all services |limited services |
+| Example | `s3.list_buckets()` | `s3.buckets.all()` |
