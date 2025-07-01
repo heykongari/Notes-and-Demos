@@ -26,7 +26,7 @@ Default output format [None]:   <add-format>  # example: json
 
 # ✒️ Fundamentals
 
-## 🔷 `Session`: Entry-Level point
+### 🔷 `Session`: Entry-Level point
 
 A session represents your connection settings to AWS.It handles yours credentials, default region and profile.
 
@@ -41,7 +41,7 @@ session = boto3.Session(profile_name='my-profile')
 
 If you don't create one, boto3 will use the default session profile based on environment variables or AWS config files.
 
-## 🔷 `client`: Low-Level service access
+### 🔷 `client`: Low-Level service access
 
 A client is a direct connection to an AWS service. All API operations are available in a dictionary-style way.
 
@@ -64,7 +64,7 @@ for bucket in response["Buckets"]:
 - Lightweight and faster
 - Great for scripts and automation
 
-## 🔷 `resource`: High-Level, object-oriented
+### 🔷 `resource`: High-Level, object-oriented
 
 A resource is a higher-level abstraction over client. It wraps AWS operations into more pythonic, object-like interfaces.
 
