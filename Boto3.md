@@ -94,7 +94,154 @@ bucket.upload_file('local_file.txt', 'remote_file.txt')
 | Availability | all services |limited services |
 | Example | `s3.list_buckets()` | `s3.buckets.all()` |
 
-# **IAM (Identity and Access Management)**
+# 💿 **AWS Services**
+
+Let's explore the most common and widely used aws services like S3, EC2, IAM...
+
+### 🔷 `S3`: Simple Storage Service
+
+What is Amazon S3?
+- Amazon s3 (simple storage service) is an object storage service.
+- You can store files (called objects) inside buckets (like folders).
+- Each object has a key (its name), and a value (its data).
+
+```python
+import boto3
+
+# create a client using session.
+s3 = session.client('s3')
+
+# list buckets.
+s3.list_buckets()
+
+# create a new bucket
+# bucket names must be globally unique.
+s.create_bucket(
+    Bucket='demo-bucket',
+    CreateBucketConfiguration={'LocationConstraint': 'ap-south-1'} # optional
+)
+
+# upload a file to bucket
+s3.upload_file(
+    Filename='sample_file.txt',
+    Bucket='demo-bucket',
+    Key='uploaded_file.txt' # Key represents file name in the bucket
+)
+
+# list files in a bucket
+response = s3.list_objects_v2(Bucket='demo-bucket')
+
+if 'Contents' in response:
+    for obj in response['Contents']:
+        print(obj['Key'])
+else:
+    print("Bucket is empty")
+
+# download files from a bucket
+s3.download_file(
+    Filename='downloaded_file.txt',
+    Bucket='demo-bucket',
+    Key='uploaded_file.txt'
+)
+
+# delete object
+s3.delete_object(
+    Bucket='demo-bucket',
+    Key='uploaded_file.txt'
+)
+
+# delete bucket
+s3.delete_bucket(Bucket='demo-bucket')
+```
+
+### 🔷 `EC2`: Elastic Compute Cloud
+
+EC2 (Elastic Compute Cloud) – one of the most powerful services in AWS. Automating EC2 using Boto3 is very useful for real-world tasks like auto-scaling, launching servers, and managing infrastructure.
+
+```python
+import boto3
+
+# create a client using session
+ec2 = session.client('ec2')
+
+# list instances
+response = ec2.describe_instances()
+
+for reservation in response['Reservations']:
+    for instance in reservation['Instances']:
+        print(f"ID: {instance['InstanceId']}, State: {instance['State']['Name']}")
+
+# list images (AMI: amazon machine images)
+response = ec2.describe_images(Owners=['amazon'])
+
+for image in response['Images'][:5]: # list 5 images
+    print(f"AMI ID: {image['ImageId']}, Name: {image['Name']}")
+```
+
+> [!IMPORTANT]
+> Before creating a new instance, a valid key pair and a security group must be created.
+
+```python
+# create a key pair (for ssh login)
+demo_key_pair = ec2.create_key_pair(KeyName='demo-key')
+
+# save to file
+with open('demo-key.pem', 'w') as f:
+    f.write(demo_key_pair['KeyMaterial'])
+
+# create a security group
+demo_group = ec2.create_security_group(
+    GroupName='demo-sg',
+    Description='security group for boto3 demo'
+)
+
+# allow ssh access
+ec2.authorize_security_group_ingress(
+    GroupId=demo_group['GroupId'],
+    IpPermissions=[
+        {
+            'IpProtocol': 'tcp',
+            'FromPort': 22,
+            'ToPort': 22,
+            'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
+        }
+    ]
+)
+```
+
+> [!TIP]
+> AWS automatically creates a default security group. If you choose to use it, you must allow inbound traffic on port 22 to enable SSH access.
+
+```python
+# create a new instance
+new_instance = ec2.run_instances(
+    ImageId='<enter a valid image id here>',
+    InstanceType='t2.micro',
+    KeyName='demo-key',
+    MinCount=1,
+    MaxCount=1,
+    SecurityGroupIds=[demo-group['GroupId']],
+    TagSpecifications=[
+        {
+            'ResourceType': 'instance',
+            'Tags': [{'Key': 'Name', 'Value': 'DemoBoto3Instance'}]
+        }
+    ],
+    UserData='''#!/bin/bash
+    echo "Hello from Boto3" > /home/ec2-user/boto3.txt'''
+)
+
+# start, stop, reboot and terminate
+ec2.start_instances(InstanceIds=['<enter image id here>'])
+
+ec2.stop_instances(InstanceIds=['<enter image id here>'])
+
+ec2.reboot_instances(InstanceIds=['<enter image id here>'])
+
+ec2.terminate_instances(InstanceIds=['<enter image id here>'])
+```
+
+### 🔷 `IAM`: Identity and Access Management
 
 IAM lets you control who access what in AWS. You can manage:
 - Users(people)
@@ -108,9 +255,14 @@ import boto3
 # create a client using session.
 iam = session.client('iam')
 
-# list users, groups and roles.
+# list users.
 users = iam.list_users()
 
+# print all the users and their info.
+for user in users['Users']:
+    print(f"Username: {user['UserName']}, Created: {user['CreateDate']}")
+
+# list groups and roles.
 groups = iam.list_groups()
 
 roles = iam.list_roles()
@@ -132,6 +284,7 @@ iam.detach_user_policy(
     PolicyArn='arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
 )
 
-# delete user
+# delete user.
 # access keys must be deleted before deleting a user or this may result in an error.
 iam.delete_user(UserName='demo-user')
+```
