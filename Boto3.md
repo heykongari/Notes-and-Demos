@@ -1,10 +1,11 @@
-# 🌸 Introduction
+# 🌸 **Introduction**
 
 Boto3 is an AWS SDK (amazon web services software development kit) for Python. It provides Python API that allows developers to interact with and manage AWS infrastructure and services. Boto3 helps in building applications that leverage various AWS services like EC2, S3, DynamoDB and many more.
 
-# 🔧 Setup
+# 🔧 **Setup**
 
-🚨 **I'm running my development environment on WSL with Visual Studio Code connected to Ubuntu instance for seamless linux-based coding on Windows.**
+> [!IMPORTANT]
+> **I'm running my development environment on WSL with Visual Studio Code connected to Ubuntu instance for seamless linux-based coding on Windows.**
 
 - Install Boto3: `pip install boto3`
 - Configure credentials using `--profile` options:
@@ -24,7 +25,7 @@ Default output format [None]:   <add-format>  # example: json
 
 - Easily switch between environments like development, staging, and production, or between personal and work accounts — all without changing the default settings or reconfiguring credentials each time.
 
-# ✒️ Fundamentals
+# ✒️ **Fundamentals**
 
 ### 🔷 `Session`: Entry-Level point
 
@@ -92,3 +93,45 @@ bucket.upload_file('local_file.txt', 'remote_file.txt')
 | Use Case | full control and config | quick scripts and iterating resources |
 | Availability | all services |limited services |
 | Example | `s3.list_buckets()` | `s3.buckets.all()` |
+
+# **IAM (Identity and Access Management)**
+
+IAM lets you control who access what in AWS. You can manage:
+- Users(people)
+- Groups
+- Roles(Temporary access for services/apps)
+- Policies(permissions)
+
+```python
+import boto3
+
+# create a client using session.
+iam = session.client('iam')
+
+# list users, groups and roles.
+users = iam.list_users()
+
+groups = iam.list_groups()
+
+roles = iam.list_roles()
+
+# create new user
+new_user = iam.create_user(UserName='demo-user')
+
+# create access keys
+new_access_key = iam.create_access_key(UserName='demo-user')
+
+# attach and detach policies
+iam.attach_user_policy(
+    UserName='demo-user',
+    PolicyArn='arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
+)
+
+iam.detach_user_policy(
+    UserName='demo-user',
+    PolicyArn='arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
+)
+
+# delete user
+# access keys must be deleted before deleting a user or this may result in an error.
+iam.delete_user(UserName='demo-user')
