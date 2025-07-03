@@ -1,8 +1,8 @@
-# 🌸 **Introduction**
+# ❓ **What is Boto3?**
 
 Boto3 is an AWS SDK (amazon web services software development kit) for Python. It provides Python API that allows developers to interact with and manage AWS infrastructure and services. Boto3 helps in building applications that leverage various AWS services like EC2, S3, DynamoDB and many more.
 
-# 🔧 **Setup**
+# 💿 **Setup**
 
 > [!IMPORTANT]
 > **I'm running my development environment on WSL with Visual Studio Code connected to Ubuntu instance for seamless linux-based coding on Windows.**
