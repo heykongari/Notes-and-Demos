@@ -58,19 +58,36 @@ aws --version
 
 ### **Configuration**
 ```bash
-aws configure --profile <any-profile-name>
+# use this for default configuration
+aws configure
+
+# use this if you want named profiles.
+aws configure --profile <demo-profile-name>
 
 # You'll be asked for this:
 AWS Access Key ID [None]:       <your-access-key-id>
 AWS Secret Access Key [None]:   <your-secret-access-key>
 Default region name [None]:     <add-region>  # example: us-east-1
 Default output format [None]:   <add-format>  # example: json
+
+# verify configuration for default
+aws sts get-caller-identity
+
+# verify for named profiles
+aws sts get-caller-identity --profile <demo-profile-name>
 ```
 
 ### 🔍 Why use profiles to configure AWS?
 - Avoids hardcoding credentials in your scripts or code. Instead, credentials stay securely in `~/.aws/credentials`, reducing the risk of accidental exposure or leaks (e.g., via GitHub).
 
 - Easily switch between environments like development, staging, and production, or between personal and work accounts — all without changing the default settings or reconfiguring credentials each time.
+
+> [!TIP]
+> To enable auto-completion, run this command.
+```bash
+echo "complete -C '/usr/local/bin/aws_completer' aws" >> ~/.bashrc
+source ~/.bashrc
+```
 
 # 🔽 **AWS Services**
 

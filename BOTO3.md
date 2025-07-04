@@ -11,13 +11,23 @@ Boto3 is an AWS SDK (amazon web services software development kit) for Python. I
 - Configure credentials using `--profile` options:
 
 ```bash
-aws configure --profile <any-profile-name>
+# use this for default configuration
+aws configure
+
+# use this if you want named profiles.
+aws configure --profile <demo-profile-name>
 
 # You'll be asked for this:
 AWS Access Key ID [None]:       <your-access-key-id>
 AWS Secret Access Key [None]:   <your-secret-access-key>
 Default region name [None]:     <add-region>  # example: us-east-1
 Default output format [None]:   <add-format>  # example: json
+
+# verify configuration for default
+aws sts get-caller-identity
+
+# verify for named profiles
+aws sts get-caller-identity --profile <demo-profile-name>
 ```
 
 ### 🔍 Why use profiles to configure AWS?
