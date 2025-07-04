@@ -41,16 +41,45 @@ It works across multiple operating systems and supports scripting which makes it
 
 > [!IMPORTANT]
 > **I'm running my development environment on WSL with Visual Studio Code connected to Ubuntu instance for seamless linux-based coding on Windows.**
+
+### **Installation**
 ```bash
+# make sure your packages are up to date.
 sudo apt update and upgrade -y
 
+# download and unpack aws cli.
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
+
+# verify after installation
+aws --version
 ```
+
+### **Configuration**
+```bash
+aws configure --profile <any-profile-name>
+
+# You'll be asked for this:
+AWS Access Key ID [None]:       <your-access-key-id>
+AWS Secret Access Key [None]:   <your-secret-access-key>
+Default region name [None]:     <add-region>  # example: us-east-1
+Default output format [None]:   <add-format>  # example: json
+```
+
+### 🔍 Why use profiles to configure AWS?
+- Avoids hardcoding credentials in your scripts or code. Instead, credentials stay securely in `~/.aws/credentials`, reducing the risk of accidental exposure or leaks (e.g., via GitHub).
+
+- Easily switch between environments like development, staging, and production, or between personal and work accounts — all without changing the default settings or reconfiguring credentials each time.
 
 # 🔽 **AWS Services**
 
 Let's explore most common and widely used aws services like IAM, EC2, S3...
 
 ### 🔷 `IAM`: Identity Access and Management
+
+IAM allows you to:
+- Create and manage users, groups, roles, and policies.
+- Define who can do what on which AWS resources.
+- Use fine-grained permissions to secure your infrastructure.
+

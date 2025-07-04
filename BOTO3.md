@@ -116,7 +116,7 @@ s3.list_buckets()
 
 # create a new bucket
 # bucket names must be globally unique.
-s.create_bucket(
+s3.create_bucket(
     Bucket='demo-bucket',
     CreateBucketConfiguration={'LocationConstraint': 'ap-south-1'} # optional
 )
