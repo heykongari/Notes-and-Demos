@@ -94,7 +94,7 @@ bucket.upload_file('local_file.txt', 'remote_file.txt')
 | Availability | all services |limited services |
 | Example | `s3.list_buckets()` | `s3.buckets.all()` |
 
-# 💿 **AWS Services**
+# 🔽 **AWS Services**
 
 Let's explore the most common and widely used aws services like S3, EC2, IAM...
 

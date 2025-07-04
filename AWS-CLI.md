@@ -3,7 +3,7 @@
 The AWS command line interface (cli) is a tool that lets you interact with aws services using commands in your terminal or shell.
 
 Instead of clicking around the aws management console, you can run commands like:
-```python
+```bash
 aws s3 ls
 aws ec2 start-instances --instance-ids i-1234567890abcdef0
 aws iam create-user --user-name demo-user
@@ -37,7 +37,19 @@ It works across multiple operating systems and supports scripting which makes it
 |Automation support|Yes (via scripts, cronjobs, CI/CD)|Yes (via code)|No|
 |Speed & Flexibility|Fast scripts|Highly flexible(full control via code)|Slower, Manual|
 
-# 💿 **AWS Services**
+# 💿 **Setup**
+
+> [!IMPORTANT]
+> **I'm running my development environment on WSL with Visual Studio Code connected to Ubuntu instance for seamless linux-based coding on Windows.**
+```bash
+sudo apt update and upgrade -y
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+```
+
+# 🔽 **AWS Services**
 
 Let's explore most common and widely used aws services like IAM, EC2, S3...
 
