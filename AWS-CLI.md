@@ -100,3 +100,82 @@ IAM allows you to:
 - Define who can do what on which AWS resources.
 - Use fine-grained permissions to secure your infrastructure.
 
+> [!TIP]
+> If you use aws profile, you'll need to add `--profile <profile-name>`. To avoid this, use environment variables. Execute this command, `export AWS_PROFILE=<profile-name>`
+```bash
+# create a new IAM user
+aws iam create-user --user-name demo-user
+
+# attach a policy. For example, administrator access policy
+aws iam attach-user-policy --user-name demo-user \
+--policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+
+# create access key
+aws iam create-access-key --user-name demo-user
+
+# create a group
+aws iam create-group --group-name demo-group
+
+# add user to group
+aws iam add-user-to-group --user-name demo-user --group-name demo-group
+
+# attach policy to group
+aws iam attach-group-policy --group-name demo-group \
+--policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
+
+# list IAM users, groups, roles and policies
+aws iam list-users
+aws iam list-groups
+aws iam list-roles
+aws iam list-policies
+```
+
+### Custom inline policy
+- This type of policy gives you complete control over what a user can access.
+- Example, a custom s3-read-only policy. Save it as `custom-s3-read-policy.json`
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [{
+        "Effect": "Allow",
+        "Action": ["s3:Get*", "s3:List*"],
+        "Resource": "*"
+    }]
+}
+```
+```bash
+# attach custom inline policy
+aws iam put-user-policy \
+--user-name demo-user \
+--policy-name S3ReadOnly \
+--policy-document file://custom-s3-read-policy.json
+```
+
+### Create/Assume a role
+- For example, create a role for ec2 access. Save it as `trust-policy.json`
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [{
+        "Effect": "Allow",
+        "Principal": { "Service": "ec2.amazonaws.com" },
+        "Action": "sts:AssumeRole"
+    }]
+}
+```
+```bash
+# create role and attach policy document
+aws iam create-role \
+--role-name ec2-s3-access-role \
+--assume-role-policy-document file://trust-policy.json
+
+# attach policy to role
+aws iam attach-role-policy \
+--role-name ec2-s3-access-role \
+--policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
+
+# Assume role
+aws sts-assume-role \
+--role-arn arn:aws:iam::123456789012:role/ec2-s3-access-role \
+--role-session-name test-session
+```
