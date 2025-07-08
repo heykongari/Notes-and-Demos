@@ -179,3 +179,74 @@ aws sts-assume-role \
 --role-arn arn:aws:iam::123456789012:role/ec2-s3-access-role \
 --role-session-name test-session
 ```
+
+### 🔷 `EC2`: Elastic Compute Cloud
+
+```bash
+aws ec2 describe-instances
+
+aws ec2 run-instances \
+  --image-id ami-xxxxxxxxxxxx \
+  --count 1 \
+  --instance-type t2.micro \
+  --key-name my-key \
+  --security-group-ids sg-xxxxxxxx \
+  --subnet-id subnet-xxxxxxxx
+
+aws ec2 start-instances --instance-ids i-xxxxxxxxxxxxxxxxx
+
+aws ec2 stop-instances --instance-ids i-xxxxxxxxxxxxxxxxx
+
+aws ec2 reboot-instances --instance-ids i-xxxxxxxxxxxxxxxxx
+
+aws ec2 terminate-instances --instance-ids i-xxxxxxxxxxxxxxxxx
+
+aws ec2 describe-instances \
+  --query "Reservations[*].Instances[*].PublicIpAddress" \
+  --output text
+
+aws ec2 create-key-pair --key-name my-key --query 'KeyMaterial' --output text > my-key.pem
+chmod 400 my-key.pem
+
+aws ec2 describe-key-pairs
+
+aws ec2 create-security-group --group-name my-sg --description "My security group"
+
+aws ec2 authorize-security-group-ingress \
+  --group-name my-sg \
+  --protocol tcp \
+  --port 22 \
+  --cidr YOUR_IP/32
+
+aws ec2 describe-security-groups
+
+aws ec2 describe-images \
+  --owners amazon \
+  --filters "Name=name,Values=amzn2-ami-hvm-*" "Name=architecture,Values=x86_64" \
+  --query 'Images[*].[ImageId,Name]' \
+  --output table
+
+aws ec2 describe-volumes
+
+aws ec2 attach-volume \
+  --volume-id vol-xxxxxxxx \
+  --instance-id i-xxxxxxxxxxxx \
+  --device /dev/xvdf
+
+aws ec2 create-tags \
+  --resources i-xxxxxxxxxxxx \
+  --tags Key=Name,Value=MyEC2
+
+aws ec2 describe-addresses
+
+aws ec2 allocate-address
+
+aws ec2 associate-address \
+  --instance-id i-xxxxxxxxxxxx \
+  --allocation-id eipalloc-xxxxxxxx
+
+aws ec2 describe-instances \
+  --query "Reservations[*].Instances[*].InstanceId" \
+  --output text | xargs -n1 aws ec2 terminate-instances --instance-ids
+
+```
