@@ -93,7 +93,7 @@ source ~/.bashrc
 
 Let's explore most common and widely used aws services like IAM, EC2, S3...
 
-### 🔷 `IAM`: Identity Access and Management
+## 🔷 `IAM`: Identity Access and Management
 
 IAM allows you to:
 - Create and manage users, groups, roles, and policies.
@@ -130,7 +130,7 @@ aws iam list-roles
 aws iam list-policies
 ```
 
-### Custom inline policy
+### 🔸 Custom inline policy
 - This type of policy gives you complete control over what a user can access.
 - Example, a custom s3-read-only policy. Save it as `custom-s3-read-policy.json`
 ```json
@@ -151,7 +151,7 @@ aws iam put-user-policy \
 --policy-document file://custom-s3-read-policy.json
 ```
 
-### Create/Assume a role
+### 🔸 Create/Assume a role
 - For example, create a role for ec2 access. Save it as `trust-policy.json`
 ```json
 {
@@ -180,19 +180,64 @@ aws sts-assume-role \
 --role-session-name test-session
 ```
 
-### 🔷 `EC2`: Elastic Compute Cloud
+## 🔷 `EC2`: Elastic Compute Cloud
+Amazon EC2 provides scalable virtual servers (instances) in the cloud. You can launch, configure, and manage them using the AWS CLI for full automation and DevOps workflows.
+
+### ✅ Here are some free tier eligible AMIs available in the us-east-1 (N. Virginia) region that you can use for practice. Availability may vary depending on when you access them.
+
+|Provider|ID|UserName|Instance Type|
+|:-:|:-:|:-:|:-:|
+|Amazon Linux|ami-05ffe3c48a9991133|ec2-user|t2.micro|
+|Amazon Linux|ami-000ec6c25978d5999|ec2-user|t2.micro|
+|Ubuntu|ami-020cba7c55df1f615|ubuntu|t2.micro|
+|Ubuntu|ami-0a7d80731ae1b2435|ubuntu|t2.micro|
 
 ```bash
+# List ec2 instances in your account
 aws ec2 describe-instances
 
+# List ec2 AMI using filters and query to narrow output.
+aws ec2 describe-images \
+  --owners amazon \
+  --filters "Name=name,Values=amzn2-ami-hvm-*" "Name=architecture,Values=x86_64" \
+  --query 'Images[*].[ImageId,Name]' \
+  --output table
+
+# Create a key pair before launching an instance (mandatory)
+aws ec2 create-key-pair --key-name my-key --query 'KeyMaterial' --output text > my-key.pem
+chmod 400 my-key.pem
+
+# Create a security group and allow ssh access (mandatory)
+aws ec2 create-security-group --group-name my-sg --description "My security group"
+
+# Allow ssh access
+aws ec2 authorize-security-group-ingress \
+  --group-name devops-sg \
+  --protocol tcp \
+  --port 22 \
+  --cidr 0.0.0.0/0
+
+# Allow http access
+aws ec2 authorize-security-group-ingress \
+  --group-name devops-sg \
+  --protocol tcp \
+  --port 80 \
+  --cidr 0.0.0.0/0
+
+# Launch an Instance
 aws ec2 run-instances \
-  --image-id ami-xxxxxxxxxxxx \
-  --count 1 \
+  --image-id <ami-id> \
   --instance-type t2.micro \
   --key-name my-key \
-  --security-group-ids sg-xxxxxxxx \
-  --subnet-id subnet-xxxxxxxx
+  --security-groups devops-sg \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=DevOps-Server}]'
 
+# Display publicIpAddress of the instance
+aws ec2 describe-instances \
+  --query "Reservations[*].Instances[*].PublicIpAddress" \
+  --output text
+
+# start, stop, reboot and terminate
 aws ec2 start-instances --instance-ids i-xxxxxxxxxxxxxxxxx
 
 aws ec2 stop-instances --instance-ids i-xxxxxxxxxxxxxxxxx
@@ -200,53 +245,4 @@ aws ec2 stop-instances --instance-ids i-xxxxxxxxxxxxxxxxx
 aws ec2 reboot-instances --instance-ids i-xxxxxxxxxxxxxxxxx
 
 aws ec2 terminate-instances --instance-ids i-xxxxxxxxxxxxxxxxx
-
-aws ec2 describe-instances \
-  --query "Reservations[*].Instances[*].PublicIpAddress" \
-  --output text
-
-aws ec2 create-key-pair --key-name my-key --query 'KeyMaterial' --output text > my-key.pem
-chmod 400 my-key.pem
-
-aws ec2 describe-key-pairs
-
-aws ec2 create-security-group --group-name my-sg --description "My security group"
-
-aws ec2 authorize-security-group-ingress \
-  --group-name my-sg \
-  --protocol tcp \
-  --port 22 \
-  --cidr YOUR_IP/32
-
-aws ec2 describe-security-groups
-
-aws ec2 describe-images \
-  --owners amazon \
-  --filters "Name=name,Values=amzn2-ami-hvm-*" "Name=architecture,Values=x86_64" \
-  --query 'Images[*].[ImageId,Name]' \
-  --output table
-
-aws ec2 describe-volumes
-
-aws ec2 attach-volume \
-  --volume-id vol-xxxxxxxx \
-  --instance-id i-xxxxxxxxxxxx \
-  --device /dev/xvdf
-
-aws ec2 create-tags \
-  --resources i-xxxxxxxxxxxx \
-  --tags Key=Name,Value=MyEC2
-
-aws ec2 describe-addresses
-
-aws ec2 allocate-address
-
-aws ec2 associate-address \
-  --instance-id i-xxxxxxxxxxxx \
-  --allocation-id eipalloc-xxxxxxxx
-
-aws ec2 describe-instances \
-  --query "Reservations[*].Instances[*].InstanceId" \
-  --output text | xargs -n1 aws ec2 terminate-instances --instance-ids
-
 ```
