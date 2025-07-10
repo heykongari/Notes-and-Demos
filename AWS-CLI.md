@@ -246,3 +246,43 @@ aws ec2 reboot-instances --instance-ids i-xxxxxxxxxxxxxxxxx
 
 aws ec2 terminate-instances --instance-ids i-xxxxxxxxxxxxxxxxx
 ```
+
+## 🔷 `S3`: Simple Storage Service
+
+Amazon S3 is an object storage service that lets you:
+- Store files (objects) inside buckets
+- Host static websites
+- Manage access with permissions and policies
+- Enable versioning, encryption, and lifecycle rules
+
+```bash
+# create a bucket (bucket name must be globally unique)
+aws s3api create-bucket --bucket demo-bucket --region us-east-1
+
+# creating a bucket in regions other than us-east-1
+aws s3api create-bucket \
+--bucket demo-bucket \
+--region <region-code> \
+--create-bucket-configuration LocationConstraint=<region-code>
+
+# delete a bucket
+aws s3api delete-bucket --bucket demo-bucket
+```
+>[!WARNING]
+>In regions other than `us-east-1`, you must specify `--create-bucket-configuration LocationConstraint=<region-code>`
+
+```bash
+# list buckets
+aws s3 ls
+
+# upload a single file
+aws s3 cp file.txt s3://demo-bucket/
+
+# upload folder recursively
+aws s3 cp folder/ s3://demo-bucket/ --recursive
+
+# download files
+aws s3 cp s3://demo-bucket/file.txt ./file.txt
+
+# delete a file
+aws s3 rm s3://demo-bucket/file.txt
